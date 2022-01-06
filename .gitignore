@@ -132,3 +132,5 @@ dmypy.json
 .idea/GZTAN Project.iml
 .idea/modules.xml
 .idea/vcs.xml
+
+audio/*
