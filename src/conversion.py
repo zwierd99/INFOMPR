@@ -7,14 +7,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def create_plot(genre, file):
-    plt.clf()
-    sample_rate, samples = wavfile.read(f'data/{genre}/{file}')
-    frequencies, times, spectogram = signal.spectrogram(samples, sample_rate)
+def save_wav_file(genre, sample_name):
+    imagepath = f'spectrograms/{genre}/{sample_name}.png'
+    try:
+        os.mkdir(f'spectrograms/{genre}/')
+    except:
+        pass
+    plt.savefig(imagepath, bbox_inches='tight')
 
-    plot = plt.pcolormesh(times, frequencies, np.log(spectogram))
+
+
+def graph_wav_file(genre, wav_file, sample_name):
+    plt.clf()
+    print(f'data/{genre}/{wav_file}')
+    sample_rate, samples = wavfile.read(f'data/{genre}/{wav_file}')
+    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
+
+    plot = plt.pcolormesh(times, frequencies, np.log(spectrogram))
     plt.axis('off')
-    return(plot)
+
+    save_wav_file(genre, sample_name)
+
     # plt.imshow(spectrogram)
 
 
@@ -24,18 +37,9 @@ def convert_GZTAN(path):
             start = time.time()
             genre = subdir[5:]
             filename = file[:-4]
-            print(f'spectograms/{genre}/{filename}.png')
-            if not os.path.exists(f'spectograms/{genre}/{filename}.png'):
-                create_plot(genre, file)
-
-
-
-                imagepath = f'spectograms/{genre}/{filename}.png'
-                try:
-                    os.mkdir(f'spectograms/{genre}/')
-                except:
-                    pass
-                plt.savefig(imagepath, bbox_inches='tight')
+            print(f'spectrograms/{genre}/{filename}.png')
+            if not os.path.exists(f'spectrograms/{genre}/{filename}.png'):
+                graph_wav_file(genre, file, filename)
                 gc.collect()
                 end = time.time()
-                print(end-start)
+                print(f'{end-start} seconds passed.')
