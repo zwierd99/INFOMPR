@@ -31,9 +31,6 @@ def create_split():
     return X_train, X_test, y_train, y_test
 
 def train_model(model, X, y):
-    print(type(X[0]))
-    X = np.ndarray([x.astype('float32') for x in X])
-
     # Compile model
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -45,7 +42,6 @@ def train_model(model, X, y):
     return model, history
 
 def evaluate_model(model, history, X_test, y_test):
-    X_test = np.ndarray([x.astype('float32') for x in X_test])
     plt.plot(history.history['accuracy'], label='accuracy')
     plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
     plt.xlabel('Epoch')
