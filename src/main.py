@@ -4,7 +4,7 @@ import datastatistics as ds
 import conversion as cv
 import machinelearning as ml
 
-PATH = 'data'
+PATH = 'F:/data'
 
 def cnn():
     X_train, X_test, y_train, y_test = ml.create_split(PATH)

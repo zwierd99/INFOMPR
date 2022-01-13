@@ -51,14 +51,13 @@ def convert_GZTAN(path):
 def spectogram_pickle(path):
     df = pd.DataFrame(columns=["name", "genre", "spectrogram"])
 
+    print("Generating spectogram pickle...")
     for subdir, _, files in os.walk(path):
         for file in files:
-            start = time.time()
             genre = subdir[len(path)+1:]            
             print(genre)
             df = df.append({'name': file, 'genre': genre, 'spectrogram': spectrogram_array(path, genre, file)}, ignore_index=True)
             gc.collect()
-            end = time.time()
-            print(f'{end - start} seconds passed.')
-
+            
     df.to_pickle(f'{path}/dataframe.pkl')
+    print("Done")
