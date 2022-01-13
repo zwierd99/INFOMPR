@@ -13,15 +13,20 @@ def load_data(path):
 
 def create_cnn():
     model = models.Sequential()
-    model.add(layers.Conv2D(129, (3,3), activation='relu', input_shape=(129, 2954 ,1)))
+    model.add(layers.Conv2D(129, (3,3), activation='relu', input_shape=(129, 2946 ,1)))
     #model.add(layers.MaxPooling2D((2, 2)))
 
     # Add Dense layers on top
+    model.add(layers.Flatten())
+    model.add(layers.Dense(1))
 
     return model
 
 def create_split():
     df = load_data(PATH)
+    df['spectrogram'] = [x[:,:2946] for x in df['spectrogram']]
+    df['genre'] = 0
+
     sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
     
     for train_index, test_index in sss.split(df['spectrogram'], df['genre']):
@@ -31,9 +36,10 @@ def create_split():
     return X_train, X_test, y_train, y_test
 
 def train_model(model, X, y):
+    X = np.array([np.asarray(x).astype('float32') for x in X])
     # Compile model
     model.compile(optimizer='adam',
-                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
                   metrics=['accuracy'])
 
     # Fit data
@@ -42,6 +48,8 @@ def train_model(model, X, y):
     return model, history
 
 def evaluate_model(model, history, X_test, y_test):
+    X_test = np.array([np.asarray(x).astype('float32') for x in X_test])
+
     plt.plot(history.history['accuracy'], label='accuracy')
     plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
     plt.xlabel('Epoch')
