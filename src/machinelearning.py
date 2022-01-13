@@ -1,8 +1,9 @@
 import tensorflow as tf
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from tensorflow.keras import layers, models
 
+from tensorflow.keras import layers, models
 from sklearn.model_selection import StratifiedShuffleSplit
 
 PATH = 'data/dataframe.pkl'
@@ -19,9 +20,7 @@ def create_cnn():
 
     return model
 
-def train_model(model):
-
-    # Create split
+def create_split():
     df = load_data(PATH)
     sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
     
@@ -29,21 +28,24 @@ def train_model(model):
         X_train, X_test = df['spectrogram'][train_index], df['spectrogram'][test_index]
         y_train, y_test = df['genre'][train_index], df['genre'][test_index]
 
-    print(X_train[:10], y_train[:10])    
-    """
+    return X_train, X_test, y_train, y_test
+
+def train_model(model, X, y):
+    print(type(X[0]))
+    X = np.ndarray([x.astype('float32') for x in X])
+
     # Compile model
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
     # Fit data
-    history = model.fit(X_train, y_train, epochs=10, 
-                        validation_data=(X_test, y_test))
+    history = model.fit(X, y, epochs=10)
 
-    #return model
-    """
+    return model, history
 
 def evaluate_model(model, history, X_test, y_test):
+    X_test = np.ndarray([x.astype('float32') for x in X_test])
     plt.plot(history.history['accuracy'], label='accuracy')
     plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
     plt.xlabel('Epoch')
@@ -52,4 +54,6 @@ def evaluate_model(model, history, X_test, y_test):
     plt.legend(loc='lower right')
 
     test_loss, test_acc = model.evaluate(X_test,  y_test, verbose=2)
+
+    print(test_acc)
     
