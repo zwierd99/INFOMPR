@@ -6,12 +6,16 @@ import matplotlib.pyplot as plt
 from tensorflow.keras import layers, models
 from sklearn.model_selection import StratifiedShuffleSplit
 
+# Allow GPU memory growth
+physical_devices = tf.config.list_physical_devices('GPU') 
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
 def load_data(path):
     return pd.read_pickle(path + '/dataframe.pkl')
 
 def create_cnn():
     model = models.Sequential()
-    model.add(layers.Conv2D(129, (3,3), activation='relu', input_shape=(129, 2946 ,1)))
+    model.add(layers.Conv2D(16, (3,3), activation='relu', input_shape=(129, 2946 ,1)))
     #model.add(layers.MaxPooling2D((2, 2)))
 
     # Add Dense layers on top
@@ -22,7 +26,7 @@ def create_cnn():
 
 def create_split(path):
     df = load_data(path)
-    df['spectrogram'] = [x[:,:2946] for x in df['spectrogram']]
+    #df['spectrogram'] = df['spectrogram'].apply(lambda x: x[:,:2946])
     df['genre'] = pd.factorize(df['genre'])[0]
     print(df)
 
@@ -36,6 +40,7 @@ def create_split(path):
 
 def train_model(model, X, y):
     X = np.array([np.asarray(x).astype('float32') for x in X])
+    
     # Compile model
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -50,7 +55,6 @@ def evaluate_model(model, history, X_test, y_test):
     X_test = np.array([np.asarray(x).astype('float32') for x in X_test])
 
     plt.plot(history.history['accuracy'], label='accuracy')
-    plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.ylim([0.5, 1])

@@ -21,7 +21,8 @@ def spectrogram_array(path,genre, wav_file):
     print(f'{path}/{genre}/{wav_file}')
     sample_rate, samples = wavfile.read(f'{path}/{genre}/{wav_file}')
 
-    return signal.spectrogram(samples, sample_rate)[2]
+    # Cut it off at the smallest possible length
+    return signal.spectrogram(samples, sample_rate)[2][:,:2946]
 
 
 def graph_wav_file(path, genre, wav_file, sample_name):
@@ -48,14 +49,13 @@ def convert_GZTAN(path):
                 print(f'{end-start} seconds passed.')
     
     
-def spectogram_pickle(path):
+def spectrogram_pickle(path):
     df = pd.DataFrame(columns=["name", "genre", "spectrogram"])
 
-    print("Generating spectogram pickle...")
+    print("Generating spectrogram pickle...")
     for subdir, _, files in os.walk(path):
         for file in files:
             genre = subdir[len(path)+1:]            
-            print(genre)
             df = df.append({'name': file, 'genre': genre, 'spectrogram': spectrogram_array(path, genre, file)}, ignore_index=True)
             gc.collect()
             
