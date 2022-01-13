@@ -7,7 +7,7 @@ from tensorflow.keras import layers, models
 from sklearn.model_selection import StratifiedShuffleSplit
 
 def load_data(path):
-    return pd.read_pickle(path)
+    return pd.read_pickle(path + '/dataframe.pkl')
 
 def create_cnn():
     model = models.Sequential()
