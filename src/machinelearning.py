@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 from tensorflow.keras import layers, models
 from sklearn.model_selection import StratifiedShuffleSplit
 
-PATH = 'data/dataframe.pkl'
-
 def load_data(path):
     return pd.read_pickle(path)
 
@@ -22,8 +20,8 @@ def create_cnn():
 
     return model
 
-def create_split():
-    df = load_data(PATH)
+def create_split(path):
+    df = load_data(path)
     df['spectrogram'] = [x[:,:2946] for x in df['spectrogram']]
     df['genre'] = pd.factorize(df['genre'])[0]
     print(df)
