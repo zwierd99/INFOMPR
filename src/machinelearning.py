@@ -18,7 +18,7 @@ def create_cnn():
 
     # Add Dense layers on top
     model.add(layers.Flatten())
-    model.add(layers.Dense(1))
+    model.add(layers.Dense(10))
 
     return model
 
@@ -40,11 +40,11 @@ def train_model(model, X, y):
     X = np.array([np.asarray(x).astype('float32') for x in X])
     # Compile model
     model.compile(optimizer='adam',
-                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
     # Fit data
-    history = model.fit(X, y, epochs=10)
+    history = model.fit(X, y, epochs=1, batch_size=1)
 
     return model, history
 
