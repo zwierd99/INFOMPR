@@ -25,7 +25,8 @@ def create_cnn():
 def create_split():
     df = load_data(PATH)
     df['spectrogram'] = [x[:,:2946] for x in df['spectrogram']]
-    df['genre'] = 0
+    df['genre'] = pd.factorize(df['genre'])[0]
+    print(df)
 
     sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
     
