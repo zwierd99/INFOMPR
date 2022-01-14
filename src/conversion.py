@@ -57,7 +57,7 @@ def spectrogram_pickle(path):
     print("Generating spectrogram pickle...")
     for subdir, _, files in os.walk(path):
         for file in files:
-            genre = subdir[len(path) + 1 :]
+            genre = subdir[len(path) + 1:]
             df = df.append(
                 {
                     "name": file,
