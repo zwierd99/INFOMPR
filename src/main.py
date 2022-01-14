@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
+from numpy import unique
 
+# Local dependencies
 import datastatistics as ds
 import conversion as cv
 import machinelearning as ml
 
-PATH = 'data'
+PATH = "data"
+
 
 def cnn():
     X_train, X_test, y_train, y_test = ml.create_split(PATH)
-    model, his = ml.train_model(ml.create_cnn(), X_train, y_train)
-    ml.evaluate_model(model, his, X_test, y_test)
+    model, his = ml.train_model(ml.create_cnn(len(unique(y_train))), X_train, y_train)
 
-if __name__ == '__main__':
-    #cv.convert_GZTAN(PATH)
-    #cv.spectrogram_pickle(PATH)
-    
+    ml.evaluate_model(model, X_test, y_test)
+    ml.plot_accuracy(his)
+
+
+if __name__ == "__main__":
+    # cv.spectrogram_pickle(PATH)
+
     cnn()
