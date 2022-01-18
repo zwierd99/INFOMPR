@@ -15,10 +15,9 @@ physical_devices = tf.config.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 batch_size = 10
-fit_step = 100
-eval_step = 200
 learning_rate = 0.0005
-epochs = 30
+epochs = 70
+test_size = 0.1
 
 
 def load_data(path, pickle):
@@ -31,27 +30,25 @@ def create_cnn(n_classes, input):
     model = Sequential()
     model.add(Conv2D(8, (3, 3), activation = "relu", input_shape = input_shape))
     model.add(BatchNormalization(axis=3))
-    model.add(MaxPool2D(2, 2))    
+    model.add(MaxPool2D())    
 
     model.add(Conv2D(16, (3, 3), activation = "relu"))
     model.add(BatchNormalization(axis=3))
-    #model.add(Activation("relu"))
-    model.add(MaxPool2D(2, 2))
+    model.add(MaxPool2D())
 
     model.add(Conv2D(32, (3, 3), activation = "relu"))
     model.add(BatchNormalization(axis=3))
-    model.add(MaxPool2D(2, 2))   
+    model.add(MaxPool2D())   
 
     model.add(Conv2D(64, (3, 3), activation = "relu"))
-    model.add(BatchNormalization(axis=-1))
-    model.add(MaxPool2D(2, 2))   
+    model.add(BatchNormalization())
+    model.add(MaxPool2D())   
 
     model.add(Conv2D(128, (3, 3), activation = "relu"))
-    model.add(BatchNormalization(axis=-1))
-    model.add(MaxPool2D(2, 2))   
+    model.add(BatchNormalization())
+    model.add(MaxPool2D())   
         
     model.add(Flatten())
-    
     model.add(Dropout(0.3))
     model.add(Dense(n_classes, activation='softmax'))
         
@@ -64,7 +61,7 @@ def create_split(path, pickle):
     df = load_data(path, pickle)
     df["genre"] = pd.factorize(df["genre"])[0]
 
-    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=0)
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=0)
 
     for train_index, test_index in sss.split(df["spectrogram"], df["genre"]):
         X_train, X_test = df["spectrogram"][train_index], df["spectrogram"][test_index]
@@ -72,21 +69,9 @@ def create_split(path, pickle):
 
     return X_train, X_test, y_train, y_test
 
-def f1_score(y_true, y_pred):
-    # Count positive samples.
-    true_positives  = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-    possible_positives  = K.sum(K.round(K.clip(y_true, 0, 1)))
-    predicted_positives  = K.sum(K.round(K.clip(y_pred, 0, 1)))
 
-    # How many selected items are relevant?
-    precision = true_positives  / (possible_positives + K.epsilon())
-
-    # How many relevant items are selected?
-    recall = true_positives  / (predicted_positives + K.epsilon())
-
-    # Calculate f1_score
-    f1_score = 2 * (precision * recall) / (precision + recall + K.epsilon())
-    return f1_score
+def rmse(y_true, y_pred):
+	return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
 
 def train_model(model, X, y):
     # Cast it to a numpy array            
@@ -99,7 +84,7 @@ def train_model(model, X, y):
 
     # Compile model
     model.compile(
-        optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy", f1_score]
+        optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy", rmse]
     )
 
     history = model.fit(
@@ -124,7 +109,7 @@ def evaluate_model(model, X_test, y_test):
     )
 
     print(f"Test Accuracy: {test_acc}")
-    print(f"F1 Accuracy: {test_f1}")
+    print(f"Test RMSE: {test_f1}")
 
 def plot_accuracy(hist):
     
@@ -146,10 +131,10 @@ def plot_accuracy(hist):
     axs[1].set_title("Error Eval")
     
     # F1 subplot
-    axs[2].plot(hist.history["f1_score"], label="Train F1 score")
-    axs[2].plot(hist.history["val_f1_score"], label="Test F1 score")    
-    axs[2].set_ylabel("F1 Score")
+    axs[2].plot(hist.history["rmse"], label="Train RMSE")
+    axs[2].plot(hist.history["val_rmse"], label="Test RMSE")    
+    axs[2].set_ylabel("RMSE")
     axs[2].legend(loc="lower right")
-    axs[2].set_title("F1 Score Eval")
+    axs[2].set_title("RMSE Eval")
     
     plt.show()
