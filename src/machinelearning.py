@@ -7,6 +7,7 @@ from sklearn.model_selection import StratifiedShuffleSplit
 # TensorFlow Dependencies
 import tensorflow as tf
 import tensorflow.keras.backend as K
+from tensorflow.keras.metrics import RootMeanSquaredError
 from tensorflow.keras import Sequential, optimizers
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Dropout, Activation
 
@@ -70,9 +71,6 @@ def create_split(path, pickle):
     return X_train, X_test, y_train, y_test
 
 
-def rmse(y_true, y_pred):
-	return K.sqrt(K.mean(K.square(y_pred - y_true), axis=-1))
-
 def train_model(model, X, y):
     # Cast it to a numpy array            
     X = np.array(X.tolist())
@@ -84,7 +82,7 @@ def train_model(model, X, y):
 
     # Compile model
     model.compile(
-        optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy", rmse]
+        optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy", RootMeanSquaredError()]
     )
 
     history = model.fit(
@@ -131,8 +129,8 @@ def plot_accuracy(hist):
     axs[1].set_title("Error Eval")
     
     # F1 subplot
-    axs[2].plot(hist.history["rmse"], label="Train RMSE")
-    axs[2].plot(hist.history["val_rmse"], label="Test RMSE")    
+    axs[2].plot(hist.history["root_mean_squared_error"], label="Train RMSE")
+    axs[2].plot(hist.history["val_root_mean_squared_error"], label="Test RMSE")    
     axs[2].set_ylabel("RMSE")
     axs[2].legend(loc="lower right")
     axs[2].set_title("RMSE Eval")
