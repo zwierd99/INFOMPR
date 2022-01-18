@@ -6,10 +6,12 @@ import datastatistics as ds
 import conversion as cv
 import machinelearning as ml
 import mel_spectrograms as ms
+import mfcc
 
 PATH = "data"
-PICKLE = 'mel_spectrograms.pkl'
+#PATH = "data_3sec"
 #PICKLE = 'dataframe.pkl'
+PICKLE = 'mel_spectrograms.pkl'
 
 
 def cnn():
@@ -21,7 +23,8 @@ def cnn():
 
 
 if __name__ == "__main__":
-    # cv.spectrogram_pickle(PATH)
-    # ms.loop_files()
-
-    cnn()
+    #cv.spectrogram_pickle(PATH)
+    ms.make_pickle(PATH)
+    #cnn()
+    
+    

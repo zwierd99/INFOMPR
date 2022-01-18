@@ -6,6 +6,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from pydub import AudioSegment
 
 
 def save_wav_file(genre, sample_name):
@@ -20,7 +21,7 @@ def save_wav_file(genre, sample_name):
 def spectrogram_array(path, genre, wav_file):
     print(f"{path}/{genre}/{wav_file}")
     sample_rate, samples = wavfile.read(f"{path}/{genre}/{wav_file}")
-
+    
     # Cut it off at the smallest possible length and cast to float32
     return np.asarray(signal.spectrogram(samples, sample_rate)[2][:, :2946]).astype(
         "float32"
@@ -56,17 +57,51 @@ def spectrogram_pickle(path):
 
     print("Generating spectrogram pickle...")
     for subdir, _, files in os.walk(path):
-        for file in files:
+        if subdir[len(path) + 1:] != '':
             genre = subdir[len(path) + 1:]
-            df = df.append(
-                {
-                    "name": file,
-                    "genre": genre,
-                    "spectrogram": spectrogram_array(path, genre, file),
-                },
-                ignore_index=True,
-            )
-            gc.collect()
+        else:
+            continue
+        for file in files:
+            if file.endswith(".wav"):
+                df = df.append(
+                    {
+                        "name": file,
+                        "genre": genre,
+                        "spectrogram": spectrogram_array(path, genre, file),
+                    },
+                    ignore_index=True,
+                )
+                gc.collect()
 
     df.to_pickle(f"{path}/dataframe.pkl")
+    print("Done")
+
+def generate_3sec(path):
+    """
+    Generates 3 second .wav files, by splitting the original data in 10 parts
+    """
+    
+    folder = f'{path.replace("data","")}/data_3sec'
+    os.makedirs(folder, exist_ok=True)
+        
+    for subdir, _, files in os.walk(path):
+        
+        # Make a folder for genre
+        if subdir[len(path) + 1:] != '':
+            genre = subdir[len(path) + 1:]
+            os.makedirs(f'{folder}/{genre}', exist_ok=True)
+
+        for file in files:
+            if file.endswith(".wav"):            
+                number = file.split('.')[1]
+                
+                for w in range(0,10):
+                    t1 = 3*(w)*1000
+                    t2 = 3*(w+1)*1000
+                    newAudio = AudioSegment.from_wav(f"{path}/{genre}/{file}")
+                    new = newAudio[t1:t2]
+                    new.export(f'{folder}/{genre}/{genre+str(number)+str(w)}.wav', format="wav")
+                    
+                print(file)
+                
     print("Done")
