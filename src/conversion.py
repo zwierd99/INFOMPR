@@ -47,7 +47,7 @@ def convert_GZTAN(path):
             print(f"spectrograms/{genre}/{filename}.png")
             if not os.path.exists(f"spectrograms/{genre}/{filename}.png"):
                 graph_wav_file(path, genre, file, filename)
-                gc.collect()
+                # gc.collect()
                 end = time.time()
                 print(f"{end-start} seconds passed.")
 
@@ -71,7 +71,7 @@ def spectrogram_pickle(path):
                     },
                     ignore_index=True,
                 )
-                gc.collect()
+                # gc.collect()
 
     df.to_pickle(f"{path}/dataframe.pkl")
     print("Done")
@@ -81,7 +81,7 @@ def generate_3sec(path):
     Generates 3 second .wav files, by splitting the original data in 10 parts
     """
     
-    folder = f'{path.replace("data","")}/data_3sec'
+    folder = f'{path.replace("data","")}data_3sec'
     os.makedirs(folder, exist_ok=True)
         
     for subdir, _, files in os.walk(path):
@@ -100,6 +100,7 @@ def generate_3sec(path):
                     t2 = 3*(w+1)*1000
                     newAudio = AudioSegment.from_wav(f"{path}/{genre}/{file}")
                     new = newAudio[t1:t2]
+                    print(f'{folder}/{genre}/{genre+str(number)+str(w)}.wav')
                     new.export(f'{folder}/{genre}/{genre+str(number)+str(w)}.wav', format="wav")
                     
                 print(file)

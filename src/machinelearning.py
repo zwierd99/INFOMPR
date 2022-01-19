@@ -12,12 +12,12 @@ from tensorflow.keras import Sequential, optimizers
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Dropout, Activation
 
 # Allow GPU memory growth
-physical_devices = tf.config.list_physical_devices("GPU")
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+# physical_devices = tf.config.list_physical_devices("GPU")
+# tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-batch_size = 10
+batch_size = 64
 learning_rate = 0.0005
-epochs = 70
+epochs = 15
 test_size = 0.1
 
 
@@ -47,10 +47,11 @@ def create_cnn(n_classes, input):
 
     model.add(Conv2D(128, (3, 3), activation = "relu"))
     model.add(BatchNormalization())
-    model.add(MaxPool2D())   
-        
+    model.add(MaxPool2D())
+
+
     model.add(Flatten())
-    model.add(Dropout(0.3))
+    model.add(Dropout(0.8))
     model.add(Dense(n_classes, activation='softmax'))
         
     print(model.summary())
@@ -74,15 +75,17 @@ def create_split(path, pickle):
 def train_model(model, X, y):
     # Cast it to a numpy array            
     X = np.array(X.tolist())
-    X_train = X[:-100]
-    y_train = y[:-100]
-    X_val = X[-100:]
-    y_val = y[-100:]
-    
+    print((len(X)/(1-test_size)))
+    validation_size = int((len(X)/(1-test_size))*test_size)
+    X_train = X[:-validation_size]
+    y_train = y[:-validation_size]
+    X_val = X[(-validation_size):]
+    y_val = y[(-validation_size):]
+
 
     # Compile model
     model.compile(
-        optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy", RootMeanSquaredError()]
+        optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy"]
     )
 
     history = model.fit(
@@ -99,7 +102,7 @@ def train_model(model, X, y):
 def evaluate_model(model, X_test, y_test):
     X_test = np.array(X_test.tolist())
 
-    _, test_acc, test_f1 = model.evaluate(
+    _, test_acc = model.evaluate(
         X_test,
         y_test,
         verbose=2,
@@ -107,11 +110,11 @@ def evaluate_model(model, X_test, y_test):
     )
 
     print(f"Test Accuracy: {test_acc}")
-    print(f"Test RMSE: {test_f1}")
+    # print(f"Test RMSE: {test_f1}")
 
 def plot_accuracy(hist):
     
-    fig, axs = plt.subplots(3)
+    fig, axs = plt.subplots(2)
         
     # accuracy subplot
     axs[0].plot(hist.history["accuracy"], label="Train Accuracy")
@@ -129,10 +132,10 @@ def plot_accuracy(hist):
     axs[1].set_title("Error Eval")
     
     # F1 subplot
-    axs[2].plot(hist.history["root_mean_squared_error"], label="Train RMSE")
-    axs[2].plot(hist.history["val_root_mean_squared_error"], label="Test RMSE")    
-    axs[2].set_ylabel("RMSE")
-    axs[2].legend(loc="lower right")
-    axs[2].set_title("RMSE Eval")
+    # axs[2].plot(hist.history["root_mean_squared_error"], label="Train RMSE")
+    # axs[2].plot(hist.history["val_root_mean_squared_error"], label="Test RMSE")
+    # axs[2].set_ylabel("RMSE")
+    # axs[2].legend(loc="lower right")
+    # axs[2].set_title("RMSE Eval")
     
     plt.show()

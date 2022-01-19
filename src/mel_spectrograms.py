@@ -49,11 +49,12 @@ def make_pickle(path):
             if file.endswith(".wav"):
                 print(file)
                 y,sr = librosa.load(f"{path}/{genre}/{file}",duration=3)
-                mel_spec = np.asarray(librosa.feature.melspectrogram(y=y,sr=sr)).astype("float32")
+                mel_spec = np.asarray(librosa.power_to_db(librosa.feature.melspectrogram(y=y,sr=sr),ref=np.max).astype("float32"))
                 if mel_spec.shape == (128,130):
                     df = df.append({"genre" : genre,
                                     "spectrogram": mel_spec},
                                     ignore_index=True)
+
     
 
     df.to_pickle(f"{path}/mel_spectrograms.pkl")
@@ -61,7 +62,7 @@ def make_pickle(path):
     
     # Show first mel spectrogram
     plt.figure(figsize=(10,4))  
-    librosa.display.specshow(librosa.power_to_db(df.iloc[0]['spectrogram'], ref=np.max), y_axis='mel', sr=sr, x_axis='time')  
+    librosa.display.specshow(df.iloc[0]['spectrogram'], y_axis='mel', sr=sr, x_axis='time')
     plt.colorbar(format='%+2.0f dB')  
     plt.title('Mel-Spectrogram')  
     plt.tight_layout()  
