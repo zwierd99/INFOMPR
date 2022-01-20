@@ -12,12 +12,12 @@ from tensorflow.keras import Sequential, optimizers
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Dropout, Activation
 
 # Allow GPU memory growth
-# physical_devices = tf.config.list_physical_devices("GPU")
-# tf.config.experimental.set_memory_growth(physical_devices[0], True)
+physical_devices = tf.config.list_physical_devices("GPU")
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 batch_size = 64
 learning_rate = 0.0005
-epochs = 15
+epochs = 100
 test_size = 0.1
 
 
@@ -51,7 +51,7 @@ def create_cnn(n_classes, input):
 
 
     model.add(Flatten())
-    model.add(Dropout(0.8))
+    model.add(Dropout(0.5))
     model.add(Dense(n_classes, activation='softmax'))
         
     print(model.summary())
@@ -130,12 +130,5 @@ def plot_accuracy(hist):
     axs[1].set_xlabel("Epoch")
     axs[1].legend(loc="upper right")
     axs[1].set_title("Error Eval")
-    
-    # F1 subplot
-    # axs[2].plot(hist.history["root_mean_squared_error"], label="Train RMSE")
-    # axs[2].plot(hist.history["val_root_mean_squared_error"], label="Test RMSE")
-    # axs[2].set_ylabel("RMSE")
-    # axs[2].legend(loc="lower right")
-    # axs[2].set_title("RMSE Eval")
-    
+
     plt.show()
