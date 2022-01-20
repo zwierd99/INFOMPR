@@ -9,6 +9,7 @@ import librosa
 import librosa.display
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 # Tensorflow libraries
 import tensorflow as tf
@@ -44,12 +45,16 @@ def make_pics(path):
                     
                     # Convert it to mel spectrogram
                     mels = librosa.feature.melspectrogram(y=y,sr=sr)
-                    librosa.display.specshow(librosa.power_to_db(mels,ref=np.max))
+                    fig = plt.Figure()
+                    canvas = FigureCanvas(fig)
+                    p = plt.imshow(librosa.power_to_db(mels,ref=np.max))
+                    
+                    #librosa.display.specshow(librosa.power_to_db(mels,ref=np.max))
                     
                     # Remove padding
-                    plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
-                                hspace = 0, wspace = 0)
-                    plt.margins(0,0)
+                    #plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, 
+                    #            hspace = 0, wspace = 0)
+                    #plt.margins(0,0)
                     
                     # Make the folder if it doesn't exist
                     if not os.path.exists(f'{path+"_img"}/{genre}'):
@@ -78,8 +83,7 @@ def train_test_split(path):
 
 # https://www.tensorflow.org/tutorials/load_data/images
 def generators(path):
-    img_height=640
-    img_width=480
+    path += '_img'
     
     # For rescaling the data to values betwen 0-1
     normalization_layer = Rescaling(1./255)
@@ -112,12 +116,13 @@ def generators(path):
     return train_ds, val_ds, test_ds
 
 def model():
-    input_shape = (640, 480, 4)
+    input_shape = (img_height, img_width, 4)
     n_classes = 10    
     
     model = Sequential()
     
     # For rescaling the data   
+    # could try leaky relu
     model.add(Conv2D(8, (3, 3), activation = "relu", input_shape = input_shape))
     model.add(BatchNormalization(axis=3))
     model.add(MaxPool2D())    
@@ -197,16 +202,18 @@ def plot_accuracy(hist):
     
 def setup_files(PATH):
     make_pics(PATH)
-    train_test_split(PATH)
+    train_test_split(PATH+'_img')
         
 
 if __name__ == "__main__":
     
     # Global variables
-    PATH = "F:/data_3sec_img"
-    batch_size=32
+    PATH = "F:/data_3sec"
+    batch_size=128
     learning_rate=0.005
     epochs=70
+    img_height=432
+    img_width=288
     
     # Uncomment if you do not have the images + test files
     #setup_files(PATH)
