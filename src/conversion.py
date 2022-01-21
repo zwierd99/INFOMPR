@@ -46,29 +46,31 @@ def generate_3sec(path):
     """
     Generates 3 second .wav files, by splitting the original data in 10 parts
     """
-    
-    folder = f'{path}/data_3sec'
+
+    folder = f"{path}/data_3sec"
     os.makedirs(folder, exist_ok=True)
-        
+
     for subdir, _, files in os.walk(path):
-        
+
         # Make a folder for genre
-        if subdir[len(path) + 1:] != '':
-            genre = subdir[len(path) + 1:]
-            os.makedirs(f'{folder}/{genre}', exist_ok=True)
+        if subdir[len(path) + 1 :] != "":
+            genre = subdir[len(path) + 1 :]
+            os.makedirs(f"{folder}/{genre}", exist_ok=True)
 
         for file in files:
-            if file.endswith(".wav"):            
-                number = file.split('.')[1]
-                
-                for w in range(0,10):
-                    t1 = 3*(w)*1000
-                    t2 = 3*(w+1)*1000
+            if file.endswith(".wav"):
+                number = file.split(".")[1]
+
+                for w in range(0, 10):
+                    t1 = 3 * (w) * 1000
+                    t2 = 3 * (w + 1) * 1000
                     newAudio = AudioSegment.from_wav(f"{path}/{genre}/{file}")
                     new = newAudio[t1:t2]
-                    print(f'{folder}/{genre}/{genre+str(number)+str(w)}.wav')
-                    new.export(f'{folder}/{genre}/{genre+str(number)+str(w)}.wav', format="wav")
-                    
+                    print(f"{folder}/{genre}/{genre+str(number)+str(w)}.wav")
+                    new.export(
+                        f"{folder}/{genre}/{genre+str(number)+str(w)}.wav", format="wav"
+                    )
+
                 print(file)
-                
+
     print("Done")
