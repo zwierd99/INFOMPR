@@ -9,15 +9,15 @@ import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow.keras.metrics import RootMeanSquaredError
 from tensorflow.keras import Sequential, optimizers
-from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Dropout, Activation
+from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Dropout
 
 # Allow GPU memory growth
 physical_devices = tf.config.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-batch_size = 64
-learning_rate = 0.0005
-epochs = 100
+batch_size = 256
+learning_rate = 0.0001
+epochs = 200
 test_size = 0.1
 
 
@@ -48,10 +48,9 @@ def create_cnn(n_classes, input):
     model.add(Conv2D(128, (3, 3), activation = "relu"))
     model.add(BatchNormalization())
     model.add(MaxPool2D())
-
-
+    
     model.add(Flatten())
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.8))
     model.add(Dense(n_classes, activation='softmax'))
         
     print(model.summary())
@@ -118,14 +117,14 @@ def plot_accuracy(hist):
         
     # accuracy subplot
     axs[0].plot(hist.history["accuracy"], label="Train Accuracy")
-    axs[0].plot(hist.history["val_accuracy"], label="Test Accuracy")    
+    axs[0].plot(hist.history["val_accuracy"], label="Validation Accuracy")    
     axs[0].set_ylabel("Accuracy")
     axs[0].legend(loc="lower right")
     axs[0].set_title("Accuracy Eval")
     
     # Error subplot
     axs[1].plot(hist.history["loss"], label="Train Error")
-    axs[1].plot(hist.history["val_loss"], label="Test Error")    
+    axs[1].plot(hist.history["val_loss"], label="Validation Error")    
     axs[1].set_ylabel("Error")
     axs[1].set_xlabel("Epoch")
     axs[1].legend(loc="upper right")

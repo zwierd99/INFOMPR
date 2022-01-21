@@ -6,6 +6,7 @@ import librosa
 import librosa.display  
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 
 
@@ -38,6 +39,7 @@ def make_pickle(path):
     """
     
     df = pd.DataFrame(columns=["genre", "spectrogram"])
+    scaler = MinMaxScaler()
     
     print(f"Starting mel spectrogram generation in {path}...")
     for subdir, _, files in os.walk(path):
@@ -49,7 +51,9 @@ def make_pickle(path):
             if file.endswith(".wav"):
                 print(file)
                 y,sr = librosa.load(f"{path}/{genre}/{file}",duration=3)
-                mel_spec = np.asarray(librosa.power_to_db(librosa.feature.melspectrogram(y=y,sr=sr),ref=np.max).astype("float32"))
+                # Ranges between -80 and 0
+                mel_spec = librosa.power_to_db(librosa.feature.melspectrogram(y=y,sr=sr),ref=np.max)
+                mel_spec = np.asarray(mel_spec).astype("float32")
                 if mel_spec.shape == (128,130):
                     df = df.append({"genre" : genre,
                                     "spectrogram": mel_spec},

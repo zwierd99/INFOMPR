@@ -7,10 +7,9 @@ import tensorflow as tf
 import conversion as cv
 import machinelearning as ml
 import mel_spectrograms as ms
-import mel_img
 
 #PATH = "data"
-PATH = "data_3sec"
+PATH = "F:/data_3sec"
 #PICKLE = 'dataframe.pkl'
 PICKLE = 'mel_spectrograms.pkl'
 
