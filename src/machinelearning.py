@@ -15,9 +15,9 @@ from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNorm
 physical_devices = tf.config.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-batch_size = 256
+batch_size = 1024
 learning_rate = 0.0001
-epochs = 200
+epochs = 500
 test_size = 0.1
 
 
@@ -29,25 +29,25 @@ def create_cnn(n_classes, input):
     input_shape = (input[0].shape[0],input[0].shape[1],1)    
     
     model = Sequential()
-    model.add(Conv2D(8, (3, 3), activation = "relu", input_shape = input_shape))
+    model.add(Conv2D(8, (3, 3), activation = "relu", input_shape = input_shape, padding='same'))
     model.add(BatchNormalization(axis=3))
-    model.add(MaxPool2D())    
+    model.add(MaxPool2D(padding='same'))    
 
-    model.add(Conv2D(16, (3, 3), activation = "relu"))
+    model.add(Conv2D(16, (3, 3), activation = "relu", padding='same'))
     model.add(BatchNormalization(axis=3))
-    model.add(MaxPool2D())
+    model.add(MaxPool2D(padding='same'))
 
-    model.add(Conv2D(32, (3, 3), activation = "relu"))
+    model.add(Conv2D(32, (3, 3), activation = "relu", padding='same'))
     model.add(BatchNormalization(axis=3))
-    model.add(MaxPool2D())   
+    model.add(MaxPool2D(padding='same'))   
 
-    model.add(Conv2D(64, (3, 3), activation = "relu"))
+    model.add(Conv2D(64, (3, 3), activation = "relu", padding='same'))
     model.add(BatchNormalization())
-    model.add(MaxPool2D())   
+    model.add(MaxPool2D(padding='same'))   
 
-    model.add(Conv2D(128, (3, 3), activation = "relu"))
+    model.add(Conv2D(128, (3, 3), activation = "relu", padding='same'))
     model.add(BatchNormalization())
-    model.add(MaxPool2D())
+    model.add(MaxPool2D(padding='same'))
     
     model.add(Flatten())
     model.add(Dropout(0.8))

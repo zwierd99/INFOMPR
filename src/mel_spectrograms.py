@@ -39,7 +39,6 @@ def make_pickle(path):
     """
     
     df = pd.DataFrame(columns=["genre", "spectrogram"])
-    scaler = MinMaxScaler()
     
     print(f"Starting mel spectrogram generation in {path}...")
     for subdir, _, files in os.walk(path):

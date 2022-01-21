@@ -7,11 +7,13 @@ import tensorflow as tf
 import conversion as cv
 import machinelearning as ml
 import mel_spectrograms as ms
+import mfcc
 
 #PATH = "data"
 PATH = "F:/data_3sec"
 #PICKLE = 'dataframe.pkl'
-PICKLE = 'mel_spectrograms.pkl'
+#PICKLE = 'mel_spectrograms.pkl'
+PICKLE = 'mfcc.pkl'
 
 
 def cnn():
@@ -27,4 +29,5 @@ if __name__ == "__main__":
     #cv.spectrogram_pickle(PATH)
     #cv.generate_3sec(PATH)
     #ms.make_pickle(PATH)
+    #mfcc.make_pickle(PATH)
     cnn()
