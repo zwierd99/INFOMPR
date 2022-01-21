@@ -1,34 +1,30 @@
 #!/usr/bin/env python3
-from numpy import unique
+# Local Libraries
+import os
+
+# 3rd Party Dependencies
+import numpy as np
 
 # Local dependencies
-import datastatistics as ds
-import tensorflow as tf
 import conversion as cv
 import machinelearning as ml
-import mel_spectrograms as ms
 import mfcc
 
-PATH = "data/data_3sec"
+PATH = "data/data_10sec"
+SHORT_PATH = "data/data_3sec"
 PICKLE = 'mfcc_and_spectrogram.pkl'
-CHECKPOINT = 'model_weights/model.474-0.84.h5'
-
-
-def cnn():
-    X_train, X_test, y_train, y_test = ml.create_split(PATH, PICKLE)
-    #model, his = ml.train_model(ml.create_cnn(len(unique(y_train)), X_train), X_train, y_train)
-    model = ml.create_cnn(len(unique(y_train)), X_train)
-
-    ##model.save('80_64_0005_dropout05')
-    ##model = tf.keras.models.load_model("80_64_0005")
-    ml.evaluate_model(model, X_test, y_test, CHECKPOINT)
-    #ml.plot_accuracy(his)
-
+CHECKPOINT = 'model_weights/best_weights.h5'
 
 if __name__ == "__main__":
-    #cv.spectrogram_pickle(PATH)
-    #cv.generate_3sec(PATH)
-    #ms.make_pickle(PATH)
-    #mfcc.make_pickle(PATH)
-    #mfcc.make_combined_pickle(PATH)
-    cnn()
+    if not os.path.exists(f'{SHORT_PATH}/{PICKLE}'):
+        cv.generate_3sec(PATH)
+        mfcc.make_combined_pickle(SHORT_PATH)
+
+    X_train, X_test, y_train, y_test = ml.create_split(SHORT_PATH, PICKLE)
+    model = ml.create_cnn(len(np.unique(y_train)), X_train)
+    
+    if not os.path.exists(CHECKPOINT):
+        model, his = ml.train_model(model, X_train, y_train)
+        ml.plot_accuracy(his)
+    
+    ml.evaluate_model(model, X_test, y_test, CHECKPOINT)

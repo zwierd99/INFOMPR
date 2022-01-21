@@ -1,3 +1,6 @@
+# Standard Libraries
+import os
+
 # 3rd party Dependencies
 import pandas as pd
 import numpy as np
@@ -18,13 +21,11 @@ tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 batch_size = 1024
 learning_rate = 0.0001
-epochs = 500
+epochs = 250
 test_size = 0.1
-
 
 def load_data(path, pickle):
     return pd.read_pickle(path + "/" + pickle)
-
 
 def create_cnn(n_classes, input):
     input_shape = (input[0].shape[0],input[0].shape[1],1)
@@ -82,7 +83,6 @@ def train_model(model, X, y):
     X_val = X[(-validation_size):]
     y_val = y[(-validation_size):]
 
-
     # Compile model
     model.compile(
         optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy"]
@@ -106,8 +106,13 @@ def train_model(model, X, y):
         callbacks=[model_checkpoint_callback]
     )
 
-    return model, history
+    for filename in sorted(os.listdir("model_weights"))[:-1]:
+        filename_relPath = os.path.join("model_weights",filename)
+        os.remove(filename_relPath)
 
+    os.rename(f'model_weights/{sorted(os.listdir("model_weights"))[0]}',"model_weights/best_weights.h5")
+
+    return model, history
 
 def evaluate_model(model, X_test, y_test, checkpoint_filepath=None):
     X_test = np.array(X_test.tolist())
@@ -126,7 +131,6 @@ def evaluate_model(model, X_test, y_test, checkpoint_filepath=None):
     )
 
     print(f"Test Accuracy: {test_acc}")
-    # print(f"Test RMSE: {test_f1}")
 
 def plot_accuracy(hist):
     

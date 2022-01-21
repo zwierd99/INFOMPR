@@ -18,16 +18,6 @@ def save_wav_file(genre, sample_name):
     plt.savefig(imagepath, bbox_inches="tight")
 
 
-def spectrogram_array(path, genre, wav_file):
-    print(f"{path}/{genre}/{wav_file}")
-    sample_rate, samples = wavfile.read(f"{path}/{genre}/{wav_file}")
-    
-    # Cut it off at the smallest possible length and cast to float32
-    return np.asarray(signal.spectrogram(samples, sample_rate)[2][:, :2946]).astype(
-        "float32"
-    )
-
-
 def graph_wav_file(path, genre, wav_file, sample_name):
     plt.clf()
     print(f"{path}/{genre}/{wav_file}")
@@ -51,30 +41,6 @@ def convert_GZTAN(path):
                 end = time.time()
                 print(f"{end-start} seconds passed.")
 
-
-def spectrogram_pickle(path):
-    df = pd.DataFrame(columns=["name", "genre", "spectrogram"])
-
-    print("Generating spectrogram pickle...")
-    for subdir, _, files in os.walk(path):
-        if subdir[len(path) + 1:] != '':
-            genre = subdir[len(path) + 1:]
-        else:
-            continue
-        for file in files:
-            if file.endswith(".wav"):
-                df = df.append(
-                    {
-                        "name": file,
-                        "genre": genre,
-                        "spectrogram": spectrogram_array(path, genre, file),
-                    },
-                    ignore_index=True,
-                )
-                # gc.collect()
-
-    df.to_pickle(f"{path}/dataframe.pkl")
-    print("Done")
 
 def generate_3sec(path):
     """
@@ -106,4 +72,3 @@ def generate_3sec(path):
                 print(file)
                 
     print("Done")
-    
