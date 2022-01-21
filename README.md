@@ -7,8 +7,8 @@
 | Exploratory data analysis   | Zwierd, Dani                  | Week 1                 | ✔️     |
 | Data (pre-)processing       | Tim, Zwierd, Floris           | Week 2                 | ✔️     |
 | Feature research            | Stephan, Sander               | Week 2                 | ✔️     |
-| Feature implementation      | Tim, Stephan, Zwierd, Sander  | Week 3-4               | ❌     |
-| Network implementation      | Tim, Stephan, Sander          | Week 3-4               | ❌     |
+| Feature implementation      | Tim, Stephan, Zwierd, Sander  | Week 3-4               | ✔️     |
+| Network implementation      | Tim, Stephan, Sander          | Week 3-4               | ✔️     |
 | Preliminary result analysis | Stephan, Sander, Floris       | Week 5                 | ❌     |
 | Presentation                | Everyone                      | Week 5 (January 26/28) | ❌     |
 | Report                      | Everyone (Specific tasks TBD) | Week 1-6               | ❌     |
