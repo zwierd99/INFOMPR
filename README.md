@@ -1,4 +1,13 @@
 # INFOMPR
+## Results
+### Accuracy
+- Validation Accuracy: 0.83868
+- Test Accuracy: 0.8538538813591003
+
+### Graph
+
+![graph](img/500epochs.png)
+
 ## Planning
 | What                        | Who?                          | When?                  | Done? |
 |-----------------------------|-------------------------------|------------------------|-------|
