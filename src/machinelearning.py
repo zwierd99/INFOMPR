@@ -15,9 +15,9 @@ from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNorm
 physical_devices = tf.config.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-batch_size = 1024
+batch_size = 256
 learning_rate = 0.0001
-epochs = 500
+epochs = 250
 test_size = 0.1
 
 
@@ -26,7 +26,7 @@ def load_data(path, pickle):
 
 
 def create_cnn(n_classes, input):
-    input_shape = (input[0].shape[0],input[0].shape[1],1)    
+    input_shape = (input[0].shape[0],input[0].shape[1],1)
     
     model = Sequential()
     model.add(Conv2D(8, (3, 3), activation = "relu", input_shape = input_shape, padding='same'))

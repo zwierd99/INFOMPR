@@ -81,7 +81,7 @@ def generate_3sec(path):
     Generates 3 second .wav files, by splitting the original data in 10 parts
     """
     
-    folder = f'{path.replace("data","")}data_3sec'
+    folder = f'{path}/data_3sec'
     os.makedirs(folder, exist_ok=True)
         
     for subdir, _, files in os.walk(path):
@@ -106,3 +106,4 @@ def generate_3sec(path):
                 print(file)
                 
     print("Done")
+    

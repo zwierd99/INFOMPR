@@ -10,7 +10,7 @@ import mel_spectrograms as ms
 import mfcc
 
 #PATH = "data"
-PATH = "F:/data_3sec"
+PATH = "data/data_3sec"
 #PICKLE = 'dataframe.pkl'
 #PICKLE = 'mel_spectrograms.pkl'
 PICKLE = 'mfcc.pkl'
