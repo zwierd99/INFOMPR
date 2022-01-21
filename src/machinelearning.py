@@ -10,14 +10,15 @@ import tensorflow.keras.backend as K
 from tensorflow.keras.metrics import RootMeanSquaredError
 from tensorflow.keras import Sequential, optimizers
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Dropout
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 # Allow GPU memory growth
 physical_devices = tf.config.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-batch_size = 256
+batch_size = 1024
 learning_rate = 0.0001
-epochs = 250
+epochs = 500
 test_size = 0.1
 
 
@@ -87,20 +88,36 @@ def train_model(model, X, y):
         optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy"]
     )
 
+    model_checkpoint_callback = ModelCheckpoint(
+        filepath='model_weights/model.{epoch:02d}-{val_accuracy:.2f}.h5',
+        verbose=2,
+        save_weights_only=True,
+        monitor='val_accuracy',
+        mode='max',
+        save_best_only=True
+    )
+
     history = model.fit(
         X_train,
         y_train,
         epochs=epochs,
         batch_size=batch_size,
-        validation_data=(X_val, y_val)
+        validation_data=(X_val, y_val),
+        callbacks=[model_checkpoint_callback]
     )
 
     return model, history
 
 
-def evaluate_model(model, X_test, y_test):
+def evaluate_model(model, X_test, y_test, checkpoint_filepath=None):
     X_test = np.array(X_test.tolist())
 
+    if checkpoint_filepath:
+        model.compile(
+            optimizer=optimizers.Adam(learning_rate=learning_rate), loss="sparse_categorical_crossentropy", metrics=["accuracy"]
+        )
+        model.load_weights(checkpoint_filepath)
+    
     _, test_acc = model.evaluate(
         X_test,
         y_test,
