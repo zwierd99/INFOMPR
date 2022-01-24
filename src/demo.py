@@ -77,7 +77,7 @@ def get_features():
        
     mels = []
     
-    for i in range(10):
+    for i in range(end//3):
         y,sr = librosa.load(f"{i}_extracted.wav",duration=3)  
         mel_spec = librosa.power_to_db(librosa.feature.melspectrogram(y=y, sr=sr), ref=np.max)
         mel_spec_arr = np.asarray(mel_spec).astype("float32")
@@ -108,7 +108,7 @@ def predict(file_name, data):
     probabilities = []
     for i in range(10):
         occurence = predictions.count(i)
-        probabilities.append(occurence/10)
+        probabilities.append(occurence/len(predictions))
 
     print(probabilities)
     prediction = np.argmax(probabilities)
@@ -130,7 +130,7 @@ def predict(file_name, data):
     
     # Show the mel spectrogram
     fig2, ax2 = plt.subplots(figsize=(10,4))
-    y, sr = librosa.load("music_file.wav", duration=30)
+    y, sr = librosa.load("music_file.wav", duration=end)
     mel = librosa.power_to_db(librosa.feature.melspectrogram(y=y, sr=sr), ref=np.max)
     librosa.display.specshow(mel, y_axis='mel', sr=sr, x_axis='time')
     plt.colorbar(format='%+2.0f dB')
@@ -144,11 +144,14 @@ class_labels = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'met
 
 file = st.sidebar.file_uploader("Please Upload An Mp3 Audio File Here",type=["mp3"])
 
+start = 0
+end = 120
+
 if file is None:  
     st.text("Please upload an mp3 file")
 else:  
-    start = 40
-    extract(file,start,start+30)   
+    
+    extract(file,start,start+end)   
     mel_spec, mfcc = get_features()   
     predict(file.name, mel_spec)   
     
