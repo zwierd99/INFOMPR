@@ -21,8 +21,8 @@ from tensorflow.keras.layers import (
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 # Allow GPU memory growth
-# physical_devices = tf.config.list_physical_devices("GPU")
-# tf.config.experimental.set_memory_growth(physical_devices[0], True)
+physical_devices = tf.config.list_physical_devices("GPU")
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 batch_size = 1024
 learning_rate = 0.0001
