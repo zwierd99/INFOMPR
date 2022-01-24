@@ -7,7 +7,7 @@
 - Test Accuracy: 0.8538538813591003
 
 #### MFCC Spectrogram
-- Train Accuracy: 0.6827639937400818
+- Train Accuracy: 0.9061
 - Validation Accuracy: 0.77255
 - Test Accuracy: 0.6336336135864258
 
