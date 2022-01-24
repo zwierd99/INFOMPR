@@ -16,6 +16,11 @@ PICKLE = "mfcc_and_spectrogram.pkl"
 CHECKPOINT = "model_weights/best_weights.h5"
 
 if __name__ == "__main__":
+    if not os.path.exists(f"{SHORT_PATH}"):
+        try:
+            os.mkdir(f"{SHORT_PATH}")
+        except:
+            pass
     if not os.path.exists(f"{SHORT_PATH}/{PICKLE}"):
         cv.generate_3sec(PATH)
         mfcc.make_combined_pickle(SHORT_PATH)
