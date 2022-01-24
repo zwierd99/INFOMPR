@@ -9,8 +9,6 @@ from sklearn.model_selection import StratifiedShuffleSplit
 
 # TensorFlow Dependencies
 import tensorflow as tf
-import tensorflow.keras.backend as K
-from tensorflow.keras.metrics import RootMeanSquaredError
 from tensorflow.keras import Sequential, optimizers
 from tensorflow.keras.layers import (
     Conv2D,
