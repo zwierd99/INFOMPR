@@ -1,13 +1,24 @@
 # INFOMPR
 ## Results
 ### Accuracy
+#### Mel Spectrogram
 - Train Accuracy: 0.9810838103294373
 - Validation Accuracy: 0.83868
 - Test Accuracy: 0.8538538813591003
 
+#### MFCC Spectrogram
+- Train Accuracy: 0.6827639937400818
+- Validation Accuracy: 0.77255
+- Test Accuracy: 0.6336336135864258
+
 ### Graph
 
+Mel Spectrogram:
+
 ![graph](img/500epochs.png)
+
+MFCC Spectrogram:
+![graph_mfcc](img/500epochs_mfcc.png)
 
 ## Planning
 | What                        | Who?                          | When?                  | Done? |
