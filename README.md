@@ -1,6 +1,7 @@
 # INFOMPR
 ## Results
 ### Accuracy
+- Train Accuracy: 0.9810838103294373
 - Validation Accuracy: 0.83868
 - Test Accuracy: 0.8538538813591003
 

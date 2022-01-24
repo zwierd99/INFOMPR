@@ -47,9 +47,12 @@ def generate_3sec(path):
     Generates 3 second .wav files, by splitting the original data in 10 parts
     """
 
-    folder = f"{path}/data_3sec"
-    os.makedirs(folder, exist_ok=True)
-
+    folder = "data/data_3sec"
+    if not os.path.exists("data/data_3sec"):
+        try:
+            os.mkdir("data/data_3sec")
+        except:
+            pass
     for subdir, _, files in os.walk(path):
 
         # Make a folder for genre
