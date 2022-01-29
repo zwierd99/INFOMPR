@@ -6,9 +6,10 @@ import os
 import numpy as np
 
 # Local dependencies
-import conversion as cv
-import machinelearning as ml
-import mfcc
+import src.conversion as cv
+import src.machinelearning as ml
+import src.mfcc as mfcc
+import src.evaluation as eval
 
 PATH = "data/data_10sec"
 SHORT_PATH = "data/data_3sec"
@@ -32,4 +33,4 @@ if __name__ == "__main__":
         model, his = ml.train_model(model, X_train, y_train)
         ml.plot_accuracy(his)
 
-    ml.evaluate_model(model, X_test, y_test, CHECKPOINT)
+    eval.evaluate_model(model, X_test, y_test, CHECKPOINT)

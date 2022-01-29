@@ -6,7 +6,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import StratifiedShuffleSplit
-
+from sklearn.metrics import classification_report, confusion_matrix
+import seaborn as sn
 # TensorFlow Dependencies
 import tensorflow as tf
 from tensorflow.keras import Sequential, optimizers
@@ -129,20 +130,6 @@ def train_model(model, X, y):
     return model, history
 
 
-def evaluate_model(model, X_test, y_test, checkpoint_filepath=None):
-    X_test = np.array(X_test.tolist())
-
-    if checkpoint_filepath:
-        model.compile(
-            optimizer=optimizers.Adam(learning_rate=learning_rate),
-            loss="sparse_categorical_crossentropy",
-            metrics=["accuracy"],
-        )
-        model.load_weights(checkpoint_filepath)
-
-    _, test_acc = model.evaluate(X_test, y_test, verbose=2, batch_size=batch_size,)
-
-    print(f"Test Accuracy: {test_acc}")
 
 
 def plot_accuracy(hist):
