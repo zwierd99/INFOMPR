@@ -70,14 +70,14 @@ def create_cnn(n_classes, input):
     return model
 
 
-def create_split(path, pickle):
+def create_split(path, pickle, input_type):
     df = load_data(path, pickle)
     df["genre"] = pd.factorize(df["genre"])[0]
 
     sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=0)
 
-    for train_index, test_index in sss.split(df["spectrogram"], df["genre"]):
-        X_train, X_test = df["spectrogram"][train_index], df["spectrogram"][test_index]
+    for train_index, test_index in sss.split(df[input_type], df["genre"]):
+        X_train, X_test = df[input_type][train_index], df[input_type][test_index]
         y_train, y_test = df["genre"][train_index], df["genre"][test_index]
 
     return X_train, X_test, y_train, y_test

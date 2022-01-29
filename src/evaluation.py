@@ -45,6 +45,7 @@ def plot_f1_scores(f1_scores):
             width=0.4)
     plt.ylabel("F1-score")
     plt.xlabel("Genres")
+    plt.yticks(np.arange(0,1.1,step=0.2))
     plt.title("F1-score per genre")
 
     # plt.yticks(np.arange(0, 1.1, step=0.1))
@@ -64,14 +65,18 @@ def evaluate_model(model, X_test, y_test, checkpoint_filepath=None):
 
     _, test_acc = model.evaluate(X_test, y_test, verbose=2, batch_size=batch_size, )
     y_prob = model.predict(X_test)
-    y_pred_mel = y_prob.argmax(axis=-1)
-    print(classification_report(y_test,y_pred_mel))
-    plot_f1_scores(f1_score(y_test, y_pred_mel, average=None))
-    nice_confusion_matrix(confusion_matrix(y_test, y_pred_mel))
+    y_pred = y_prob.argmax(axis=-1)
+    clas_report = classification_report(y_test,y_pred, output_dict=True)
+    print(classification_report(y_test,y_pred))
+    df = pd.DataFrame(clas_report)
+    print(df.transpose().to_latex())
+    plot_f1_scores(f1_score(y_test, y_pred, average=None))
+    nice_confusion_matrix(confusion_matrix(y_test, y_pred))
 
     print(f"Test Accuracy: {test_acc}")
 
 def mcnemar_test(y_true, y_pred_1, y_pred_2):
+    y_true = y_true.to_numpy()
     binarized_answer_1 = [1 if y_pred_1[x] == y_true[x] else 0 for x in range(len(y_true))]
     binarized_answer_2 = [1 if y_pred_2[x] == y_true[x] else 0 for x in range(len(y_true))]
 
