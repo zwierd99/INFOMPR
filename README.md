@@ -30,13 +30,13 @@ MFCC Spectrogram:
 | Proposal                    | Everyone                      | Week 0                 | ✔️     |
 | Related works               | Dani                          | Week 1                 | ✔️     |
 | Exploratory data analysis   | Zwierd, Dani                  | Week 1                 | ✔️     |
-| Data (pre-)processing       | Tim, Zwierd, Floris           | Week 2                 | ✔️     |
+| Data (pre-)processing       | Tim, Zwierd                   | Week 2                 | ✔️     |
 | Feature research            | Stephan, Sander               | Week 2                 | ✔️     |
 | Feature implementation      | Tim, Stephan, Zwierd, Sander  | Week 3-4               | ✔️     |
 | Network implementation      | Tim, Stephan, Sander          | Week 3-4               | ✔️     |
-| Preliminary result analysis | Stephan, Sander, Floris       | Week 5                 | ❌     |
-| Presentation                | Everyone                      | Week 5 (January 26/28) | ❌     |
-| Report                      | Everyone (Specific tasks TBD) | Week 1-6               | ❌     |
+| Preliminary result analysis | Stephan, Sander               | Week 5                 | ✔️     |
+| Presentation                | Stephan, Tim, Floris          | Week 5 (January 26/28) | ✔️     |
+| Report                      | Sander, Dani, Zwierd, Floris  | Week   6               | ✔️     |
 
 ## Links
 ### Project Proposal
